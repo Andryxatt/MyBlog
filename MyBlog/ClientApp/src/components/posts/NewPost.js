@@ -16,7 +16,7 @@ export class NewPost extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     componentDidMount() {
-        axios.get("https://localhost:5001/api/authors")
+        axios.get("https://localhost:44385/api/authors")
             .then(response => {
                 console.log(response)
                 this.setState({ authors: response.data, isFetching: false })
@@ -28,7 +28,7 @@ export class NewPost extends Component {
    
     handleSubmit(event){
         event.preventDefault();
-        axios.post("https://localhost:5001/api/posts", this.state.newPost)
+        axios.post("https://localhost:44385/api/posts", this.state.newPost)
         .then(response => {
             console.log(response);
             console.log(this.state);

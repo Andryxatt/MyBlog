@@ -6,6 +6,7 @@ import { PostList } from './components/posts/PostList';
 import './custom.css'
 import { NewPost } from './components/posts/NewPost';
 import Counter  from './components/Counter';
+import {PostDetails} from './components/posts/PostDetails';
 export default class App extends Component {
   static displayName = App.name;
 
@@ -16,6 +17,7 @@ export default class App extends Component {
         <Route path='/counter' component={Counter} />
         <Route path='/posts' component={PostList} />
         <Route path='/new-post' component={NewPost} />
+        <Route path='/post-detail/:id' component={PostDetails} />
       </Layout>
     );
   }

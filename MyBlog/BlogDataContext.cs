@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyBlog.Models;
 using System;
 using System.Collections.Generic;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyBlog
 {
-    public class BlogDataContext : DbContext
+    public class BlogDataContext : IdentityDbContext<IdentityUser>
     {
         public DbSet<Post> Posts { get; set; }
         public DbSet<Author> Author { get; set; }
@@ -17,6 +19,7 @@ namespace MyBlog
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
             builder.Entity<Author>().HasData(
                 new Author[]
                 {
