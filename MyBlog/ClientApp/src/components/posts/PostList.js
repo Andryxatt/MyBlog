@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import instanceAxios from '../../services/authenticate';
 import { NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import {  } from 'react-router-dom';
@@ -13,13 +13,7 @@ export class PostList extends Component {
         }
     }
     componentDidMount() {
-        let config = {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYW5kcmlpMiIsImp0aSI6ImJiN2VkOTg5LWVkYzgtNGNmOC05YWU4LTM2YjY5NDQ3NDJiYSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6WyJBZG1pbiIsIlVzZXIiXSwiZXhwIjoxNjU4MzUwNDc3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjQyMDAifQ.bYmjYjlv9Z-9uwXXcfslo8S6trhndhK9S47jKv2FEUU"
-            }
-        }
-        axios.get("https://localhost:44385/api/posts", config)
+        instanceAxios.get("api/posts")
             .then(response => {
                 console.log(response)
                 this.setState({ posts: response.data, isFetching: false })
@@ -29,7 +23,7 @@ export class PostList extends Component {
         
     }
     removePost = (id, e) => {
-        axios.delete("https://localhost:44385/api/posts/" + id)
+        instanceAxios.delete("https://localhost:44385/api/posts/" + id)
             .then(response => {
                alert("Post deleted")
                this.setState({ posts: this.state.posts.filter(post => post.id !== id) })

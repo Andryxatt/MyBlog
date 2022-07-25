@@ -7,7 +7,11 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyBlog;
+using MyBlog.Filter;
+using MyBlog.Helpers;
 using MyBlog.Models;
+using MyBlog.Services;
+using MyBlog.Wrappers;
 
 namespace MyBlog.Controllers
 {
@@ -16,18 +20,28 @@ namespace MyBlog.Controllers
     public class PostsController : ControllerBase
     {
         private readonly BlogDataContext _context;
+        private readonly IUriService _uriService;
 
-        public PostsController(BlogDataContext context)
+        public PostsController(BlogDataContext context, IUriService uriService)
         {
             _context = context;
+            _uriService = uriService;
         }
 
         // GET: api/Posts
         [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<Post>>> GetPosts()
+        public async Task<ActionResult<IEnumerable<Post>>> GetPosts([FromQuery] PaginationFilter filter)
         {
-            return await _context.Posts.Include(d=>d.Author).ToListAsync();
+            var route = Request.Path.Value;
+            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
+            var pagedData = await _context.Posts
+                .Include(d => d.Author)
+                .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+                .Take(validFilter.PageSize)
+                .ToListAsync();
+            var totalRecords = await _context.Posts.Include(d => d.Author).CountAsync();
+            var pagedResponse = PaginationHelper.CreatePagedResponse<Post>(pagedData, validFilter, totalRecords, _uriService, route);
+            return Ok(pagedResponse);
         }
 
         // GET: api/Posts/5
@@ -41,7 +55,7 @@ namespace MyBlog.Controllers
                 return NotFound();
             }
 
-            return post;
+            return Ok(new Response<Post>(post));
         }
 
         // PUT: api/Posts/5
